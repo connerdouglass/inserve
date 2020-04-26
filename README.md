@@ -37,7 +37,7 @@ Pretty simple. But, this code is longer than the equivalent code in Express! So 
 
 ```typescript
 import 'reflect-metadata';
-import { container, InjectionToken, injectable, inject } from 'tsyringe';
+import { InjectionToken, injectable, inject } from 'tsyringe';
 import { Server, Handler } from '../src';
 import { Request, Response } from 'express';
 
@@ -111,12 +111,14 @@ class HelloWorld implements Handler {
 
 }
 
-// Inject our database implementation
-container.register(DATABASE_TOKEN, MyDatabase);
-
 // Create the server instance
 const server: Server = new Server();
 server.get('/', RequireAccessToken, HelloWorld);
+
+// Inject our database implementation
+server.getContainer().register(DATABASE_TOKEN, MyDatabase);
+
+// Start the database
 server.listen(8080);
 ```
 

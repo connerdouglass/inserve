@@ -9,6 +9,7 @@
     "type": "git",
     "url": "https://github.com/connerdouglass/inserve.git"
   },
+  "license": "MIT",
   "keywords": [
     "typescript",
     "express",
