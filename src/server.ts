@@ -12,25 +12,12 @@ export class Server {
     /**
      * The Express server instance
      */
-    private express_server: express.Application;
+    private express_server: express.Application = express();
 
     /**
      * The dependency injection container
      */
-    private container: DependencyContainer;
-
-    /**
-     * Constructs a server instance
-     */
-    public constructor() {
-
-        // Create the underlying server
-        this.express_server = express();
-        
-        // Default to the root container
-        this.container = RootContainer
-
-    }
+    private container: DependencyContainer = RootContainer;
 
     /**
      * Gets the underlying Express server instance

@@ -73,11 +73,13 @@ class HelloWorld implements Handler {
 
 }
 
-// Inject the database instance
-container.register(DATABASE_TOKEN, MyDatabase);
-
 // Create the server instance
 const server: Server = new Server();
+
+// Inject the database instance
+server.getContainer().register(DATABASE_TOKEN, MyDatabase);
+
+// Start running the server
 server.get('/', RequireAccessToken, HelloWorld);
 server.listen(8080)
     .then(() => console.log(`Started server on port 8080`))
