@@ -115,11 +115,23 @@ export class Server {
             // Or, if the instance is a Handler instance
             else {
 
-                // Call the handler function
-                const result = instance.handle(req, res);
+                try {
 
-                // If there is a result, and it's a promise, wait for it to resolve
-                if (result && result instanceof Promise) await result;
+                    // Call the handler function
+                    const result = instance.handle(req, res);
+
+                    // If there is a result, and it's a promise, wait for it to resolve
+                    if (result && result instanceof Promise) await result;
+
+                } catch (err) {
+
+                    // Output an error
+                    res.status(500).send('Internal server error');
+
+                    // Log the error
+                    console.error(err);
+
+                }
 
                 // Wait for a brief timeout
                 await new Promise<void>(res => setTimeout(res, 0));
