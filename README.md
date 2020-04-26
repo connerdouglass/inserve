@@ -5,7 +5,7 @@ Inserve aims to extend Express with a number of features that are vital while wo
 - First-class support for dependency injection into route handlers (using Microsoft's tsyringe library)
 - A really great TypeScript experience. Typings built-in to the package, and used from the start, not as an afterthought.
 - Compatibility with everything else that is made for Express. We don't change the fundamentals at all.
-- BYOE: "Bring your own Express." Ideally, you should provide Express (and tsyringe) as a dependency to your project. We use it as a peer dependency.
+- BYOE: "Bring your own Express." We depend on Express and tsyringe as peer dependencies. The versions used in your project will be used by Inserve also.
 
 ### Example #1 - Hello World
 
