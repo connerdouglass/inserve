@@ -17,7 +17,7 @@ export class Server {
     /**
      * The dependency injection container
      */
-    private container: DependencyContainer = RootContainer;
+    private container: DependencyContainer;
 
     /**
      * Constructs a server instance
@@ -26,6 +26,9 @@ export class Server {
 
         // Create the underlying server
         this.express_server = express();
+        
+        // Default to the root container
+        this.container = RootContainer
 
     }
 
@@ -41,6 +44,14 @@ export class Server {
      */
     public getContainer(): DependencyContainer {
         return this.container;
+    }
+
+    /**
+     * 
+     * @param container the container to use for this server
+     */
+    public setContainer(container: DependencyContainer): void {
+        this.container = container;
     }
 
     /**
@@ -104,7 +115,15 @@ export class Server {
             }
 
             // If the instance is a Server
-            if (instance instanceof Server) instance.express_server(req, res, next);
+            if (instance instanceof Server) {
+
+                // Create a nested container for the child
+                instance.container = this.container.createChildContainer();
+
+                // Call the underlying server
+                instance.express_server(req, res, next);
+
+            }
 
             // Or, if the instance is a Handler instance
             else {
