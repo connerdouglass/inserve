@@ -1,0 +1,26 @@
+{
+  "name": "inverse",
+  "author": "Conner Douglass <conner.douglass@gmail.com",
+  "version": "0.0.1",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "build:check": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "peerDependencies": {
+    "express": "^4.17.1",
+    "tsyringe": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.6",
+    "@types/node": "^13.13.2",
+    "express": "^4.17.1",
+    "tsyringe": "^4.1.0",
+    "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "reflect-metadata": "^0.1.13"
+  }
+}
