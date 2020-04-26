@@ -1,6 +1,5 @@
 import 'reflect-metadata';
 import { Server, Handler } from '../src';
-import { Request, Response } from 'express';
 
 class ApiServer extends Server {
 
