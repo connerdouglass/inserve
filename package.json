@@ -9,6 +9,9 @@
     "build:check": "tsc --noEmit",
     "clean": "rm -rf dist"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "peerDependencies": {
     "express": "^4.17.1",
     "tsyringe": "^4.1.0"
