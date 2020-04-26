@@ -121,7 +121,7 @@ server.listen(8080);
 ```
 
 ## Conclusion
-For large codebases, where is't crucial to build generic components which can be used in multiple different environments, dependency injection is a must.
+For large codebases, where it's crucial to build generic components which can be used in multiple different environments, dependency injection is a must.
 
 Inserve enables your Express servers to take advantage of dependency injection. Routes can define what services and values they need, and the upstream provider / environment can inject the appropriate implementation at runtime.
 
