@@ -1,7 +1,8 @@
 import 'reflect-metadata';
-import { container, InjectionToken, injectable, inject } from 'tsyringe';
-import { Server, Handler } from '../src';
 import { Request, Response } from 'express';
+import http from 'http';
+import { inject, injectable, InjectionToken } from 'tsyringe';
+import { Handler, HTTP_SERVER_TOKEN, Server } from '../src';
 
 /**
  * This injection token can be used to inject / resolve a database implementation
@@ -49,7 +50,7 @@ class RequireAccessToken implements Handler {
         @inject(DATABASE_TOKEN) private database: IDatabase) {}
 
     public async handle(req: Request, res: Response): Promise<void> {
-
+return;
         // Get the token from headers
         const token: string | undefined = req.headers.authorization?.replace(/^Bearer\s+/i, '');
 
@@ -65,7 +66,11 @@ class RequireAccessToken implements Handler {
     }
 }
 
+@injectable()
 class HelloWorld implements Handler {
+
+    public constructor(
+        @inject(HTTP_SERVER_TOKEN) private http_server: http.Server) {}
 
     public handle(req: Request, res: Response) {
         res.send('Hello world!');
