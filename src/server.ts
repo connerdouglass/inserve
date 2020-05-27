@@ -1,11 +1,17 @@
+import http from 'http';
 import express from 'express';
-import { DependencyContainer, container as RootContainer } from 'tsyringe';
+import { DependencyContainer, container as RootContainer, InjectionToken } from 'tsyringe';
 import { Handler } from './handler';
 import { Newable } from './newable';
 
 // NOTE: This comes directly from Express. Ideally, would like to link into an internal
 //       type definition, for maximum compatibility.
 type PathParams = string | RegExp | Array<string | RegExp>;
+
+/**
+ * Injection token for the underlying HTTP server instance
+ */
+export const HTTP_SERVER_TOKEN: InjectionToken<http.Server> = Symbol('HTTP_SERVER_TOKEN');
 
 export class Server {
 
@@ -49,10 +55,14 @@ export class Server {
     public listen(port: number | string): Promise<void> {
         return new Promise<void>((resolve, reject) => {
 
-            // Start the server
-            this.express_server
-                .listen(port, resolve)
-                .on('error', reject);
+            // Create the HTTP server
+            const http_server: http.Server = this.express_server.listen(port, resolve);
+
+            // Inject the http server
+            this.container.register(HTTP_SERVER_TOKEN, {useValue: http_server});
+
+            // If there is an error
+            http_server.on('error', reject);
 
         });
     }
