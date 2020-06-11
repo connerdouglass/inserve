@@ -106,8 +106,18 @@ export class Server {
             // If the value has not been resolved
             if (instance === null) {
 
-                // Resolve the instance
-                instance = this.container.resolve(h);
+                try {
+
+                    // Resolve the instance
+                    instance = this.container.resolve(h);
+
+                } catch (err) {
+
+                    // Throw the error
+                    res.send(err?.message ?? err ?? `Error resolving handler: ${h}`);
+                    return;
+
+                }
 
             }
 
