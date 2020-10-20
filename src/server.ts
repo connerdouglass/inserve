@@ -69,6 +69,9 @@ export class Server {
             // If there is an error
             http_server.on('error', reject);
 
+            // Trigger the handlers
+            this.trigger_listen_handlers();
+
         });
     }
 
@@ -99,6 +102,22 @@ export class Server {
     }
 
     /**
+     * Handlers for when the server starts to listen
+     */
+    private listen_handlers: (() => void)[] = [];
+
+    /**
+     * Triggers all of the listen handlers
+     */
+    private trigger_listen_handlers(): void {
+
+        // Run all of the handlers
+        this.listen_handlers.forEach(h => h());
+        this.listen_handlers = [];
+
+    }
+
+    /**
      * Takes a handler received as an argument and converts it into a request handler
      * function that can be understood by Express
      * @param path the path parameters
@@ -109,11 +128,27 @@ export class Server {
         // The instance itself
         let instance: Handler | Server | null = null;
 
+        // Resolve function
+        const resolve = () => {
+
+            // Resolve the instance
+            instance = this.container.resolve(h);
+
+            // If the instance is a server
+            if (instance instanceof Server) {
+
+                // Trigger the handlers on the subserver
+                instance.trigger_listen_handlers();
+
+            }
+
+        };
+
         // If we're loading eagerly
         if (typeof path === 'object' && 'eager' in path && path.eager) {
 
-            // Resolve the instance right now
-            instance = this.container.resolve(h);
+            // Add a handler to the server
+            this.listen_handlers.push(resolve);
 
         }
 
@@ -126,7 +161,7 @@ export class Server {
                 try {
 
                     // Resolve the instance
-                    instance = this.container.resolve(h);
+                    resolve();
 
                 } catch (err) {
 
@@ -155,7 +190,7 @@ export class Server {
                 try {
 
                     // Call the handler function
-                    const result = instance.handle(req, res);
+                    const result = instance!.handle(req, res);
 
                     // If there is a result, and it's a promise, wait for it to resolve
                     if (result && result instanceof Promise) await result;
