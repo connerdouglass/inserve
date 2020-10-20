@@ -6,7 +6,12 @@ import { Newable } from './newable';
 
 // NOTE: This comes directly from Express. Ideally, would like to link into an internal
 //       type definition, for maximum compatibility.
-type PathParams = string | RegExp | Array<string | RegExp>;
+type PathParamsStr = string | RegExp | Array<string | RegExp>;
+
+type PathParams = PathParamsStr | {
+    path: PathParamsStr;
+    eager?: boolean;
+};
 
 /**
  * Injection token for the underlying HTTP server instance
@@ -86,19 +91,31 @@ export class Server {
      * @param handlers the handlers to register
      */
     private attach(method: string, path: PathParams, ...handlers: Newable<Handler | Server>[]): this {
-        this.express_server[method]?.(path, ...handlers.map(h => this.wrapHandler(h)));
+        this.express_server[method]?.(
+            (typeof path === 'string') ? path :
+            (typeof path === 'object' && 'path' in path) ? path.path : null,
+            ...handlers.map(h => this.wrapHandler(path, h)));
         return this;
     }
 
     /**
      * Takes a handler received as an argument and converts it into a request handler
      * function that can be understood by Express
+     * @param path the path parameters
      * @param h the handler passed in as an argument
      */
-    private wrapHandler(h: Newable<Handler | Server>): express.RequestHandler {
+    private wrapHandler(path: PathParams, h: Newable<Handler | Server>): express.RequestHandler {
 
         // The instance itself
         let instance: Handler | Server | null = null;
+
+        // If we're loading eagerly
+        if (typeof path === 'object' && 'eager' in path && path.eager) {
+
+            // Resolve the instance right now
+            instance = this.container.resolve(h);
+
+        }
 
         // Return the handler function
         return async (req: express.Request, res: express.Response, next: express.NextFunction) => {
