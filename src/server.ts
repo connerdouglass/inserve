@@ -53,6 +53,18 @@ export class Server {
     }
 
     /**
+     * Behaves like the listen method, but doesn't actually start the HTTP server
+     * on a port. This is useful if you're running this within a wrapper server
+     * and need eager routes to work correctly.
+     */
+    public soft_listen(): void {
+
+        // Trigger the listen handlers
+        this.trigger_listen_handlers();
+
+    }
+
+    /**
      * Launches the server, listening on the specified port number. Returns a promise
      * which resolves when the server is successfully started.
      * @param port the port number to listen on
